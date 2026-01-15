@@ -48,4 +48,10 @@ export const tools: Tool[] = [
     description: "Test regular expressions with live matching",
     icon: "regex",
   },
+  {
+    name: "Timestamp Converter",
+    slug: "timestamp",
+    description: "Convert between Unix timestamps and dates",
+    icon: "timestamp",
+  },
 ];
