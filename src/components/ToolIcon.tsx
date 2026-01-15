@@ -1,4 +1,4 @@
-import { JWTIcon, UUIDIcon, Base64Icon, HashIcon, JSONIcon, PasswordIcon } from "./icons";
+import { JWTIcon, UUIDIcon, Base64Icon, HashIcon, JSONIcon, PasswordIcon, RegexIcon } from "./icons";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   jwt: JWTIcon,
@@ -7,6 +7,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   hash: HashIcon,
   json: JSONIcon,
   password: PasswordIcon,
+  regex: RegexIcon,
 };
 
 export function ToolIcon({ icon, className = "w-6 h-6" }: { icon: string; className?: string }) {

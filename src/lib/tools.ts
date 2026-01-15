@@ -42,4 +42,10 @@ export const tools: Tool[] = [
     description: "Generate secure random passwords",
     icon: "password",
   },
+  {
+    name: "Regex Tester",
+    slug: "regex",
+    description: "Test regular expressions with live matching",
+    icon: "regex",
+  },
 ];

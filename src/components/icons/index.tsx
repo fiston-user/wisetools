@@ -4,3 +4,4 @@ export { Base64Icon } from "./Base64Icon";
 export { HashIcon } from "./HashIcon";
 export { JSONIcon } from "./JSONIcon";
 export { PasswordIcon } from "./PasswordIcon";
+export { RegexIcon } from "./RegexIcon";
