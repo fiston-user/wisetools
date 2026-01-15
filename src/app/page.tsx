@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { tools } from "@/lib/tools";
 import { Logo } from "@/components/Logo";
+import { ToolIcon } from "@/components/ToolIcon";
 
 export default function Home() {
   return (
@@ -20,7 +21,7 @@ export default function Home() {
             href={`/tools/${tool.slug}`}
             className="block p-6 bg-card border border-card-border rounded-xl hover:border-primary transition-colors"
           >
-            <div className="text-3xl mb-3">{tool.icon}</div>
+            <ToolIcon icon={tool.icon} className="w-10 h-10 mb-3" />
             <h2 className="text-xl font-semibold mb-2">{tool.name}</h2>
             <p className="text-muted text-sm">{tool.description}</p>
           </Link>
