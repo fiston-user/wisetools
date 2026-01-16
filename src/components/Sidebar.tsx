@@ -7,11 +7,37 @@ import { tools } from "@/lib/tools";
 import { Logo } from "./Logo";
 import { ToolIcon } from "./ToolIcon";
 
+const THEME_KEY = "wisetools-theme";
+
+type Theme = "dark" | "light" | "system";
+
+type ResolvedTheme = "dark" | "light";
+
+const resolveTheme = (theme: Theme): ResolvedTheme => {
+  if (theme === "system") {
+    return window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark";
+  }
+
+  return theme;
+};
+
+const getThemeLabel = (theme: Theme): string => {
+  if (theme === "system") {
+    return "Use system theme";
+  }
+
+  return theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+};
+
 export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [theme, setTheme] = useState<Theme>("system");
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("dark");
 
   useEffect(() => {
     setIsMobileOpen(false);
@@ -30,6 +56,33 @@ export function Sidebar() {
     };
   }, []);
 
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem(THEME_KEY) as Theme | null;
+    const initialTheme = storedTheme ?? "system";
+    const resolved = resolveTheme(initialTheme);
+    setTheme(initialTheme);
+    setResolvedTheme(resolved);
+    document.documentElement.dataset.theme = resolved;
+
+    const media = window.matchMedia("(prefers-color-scheme: light)");
+    const handleChange = () => {
+      setResolvedTheme((current) => {
+        if (theme !== "system") {
+          return current;
+        }
+        const nextResolved = resolveTheme("system");
+        document.documentElement.dataset.theme = nextResolved;
+        return nextResolved;
+      });
+    };
+
+    media.addEventListener("change", handleChange);
+
+    return () => {
+      media.removeEventListener("change", handleChange);
+    };
+  }, [theme]);
+
   const sidebarClasses = [
     "bg-card border-r border-card-border p-4 flex flex-col transition-all duration-300",
     "fixed inset-y-0 left-0 z-40 w-64 md:sticky md:top-0 md:h-screen",
@@ -42,6 +95,15 @@ export function Sidebar() {
     "text-xs text-muted mt-4",
     isCollapsed ? "md:hidden" : "",
   ].join(" ");
+  const toggleTheme = () => {
+    const nextTheme =
+      theme === "dark" ? "light" : theme === "light" ? "system" : "dark";
+    const nextResolved = resolveTheme(nextTheme);
+    setTheme(nextTheme);
+    setResolvedTheme(nextResolved);
+    document.documentElement.dataset.theme = nextResolved;
+    window.localStorage.setItem(THEME_KEY, nextTheme);
+  };
 
   return (
     <>
@@ -170,7 +232,33 @@ export function Sidebar() {
           </ul>
         </nav>
 
-        <div className={footerClasses}>More tools coming soon...</div>
+        <div className={`mt-4 ${isCollapsed ? "md:flex md:flex-col md:items-center" : ""}`}>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg border border-card-border bg-card hover:border-primary transition-colors ${
+              isCollapsed ? "md:w-12 md:justify-center md:px-2" : ""
+            }`}
+            aria-label={getThemeLabel(theme)}
+            title={getThemeLabel(theme)}
+          >
+            <span className="text-lg" aria-hidden="true">
+              {theme === "system"
+                ? "🖥️"
+                : resolvedTheme === "dark"
+                  ? "☀️"
+                  : "🌙"}
+            </span>
+            <span className={isCollapsed ? "md:hidden" : "block"}>
+              {theme === "system"
+                ? "System"
+                : resolvedTheme === "dark"
+                  ? "Light mode"
+                  : "Dark mode"}
+            </span>
+          </button>
+          <div className={footerClasses}>More tools coming soon...</div>
+        </div>
       </aside>
     </>
   );
